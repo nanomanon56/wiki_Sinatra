@@ -14,13 +14,18 @@ def save_content(title, content)
  end 		
 end	
 
+def delete_content(title)
+	File.delete("pages/#{title}.txt")
+end	
+
 #this leads me to my home page 
 get "/" do 
-	erb :welcome
+	erb :welcome, layout: :page
+
 end	
 #this leads me to my new post page 
 get "/new" do
-erb :new
+erb :new, layout: :page
 end 
 #this goes to my views file and to my show.erb, This will change my title and content 
 get "/:title" do
@@ -29,9 +34,23 @@ get "/:title" do
 erb :show 
 end 	
 
+get "/:title/edit" do
+	@title=params[:title]
+	@content =page_content(@title)
+	erb :edit
+end
 #This saves my posts into the pages file, and redirects me to what my post was  
 #{"title"=>"tuyre", "content"=>"jytrsvfe", "submit"=>"Submit"} this is what it looks like 
 post "/create" do
 	save_content(params["title"], params["content"])
-	redirect URI.escape("/#{params['title']}")
+	redirect URI.escape("/#{params["title"]}")
 end
+
+put "/:title" do
+   erb 'show'.to_sym
+	end
+
+delete "/:title" do
+  delete_content(params[:title])
+  redirect "/"
+end 	
